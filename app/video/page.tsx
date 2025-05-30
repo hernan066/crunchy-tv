@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Loader } from "@/components/loader";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
 
-const VideoPage = () => {
+const VideoComponent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [data, setData] = useState<any>(null);
@@ -89,4 +89,10 @@ const VideoPage = () => {
   ); */
 };
 
-export default VideoPage;
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<p>Cargando...</p>}>
+      <VideoComponent />
+    </Suspense>
+  );
+}

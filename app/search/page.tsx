@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useGetSearchQuery } from "@/store/services/animeApi";
 import { AnimeItem, ApiResponseSuccess } from "@/types";
 
-export default function SearchPage() {
+function SearchComponent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query: any = searchParams.get("query") ?? "";
@@ -105,5 +105,13 @@ export default function SearchPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<p>Cargando...</p>}>
+      <SearchComponent />
+    </Suspense>
   );
 }
