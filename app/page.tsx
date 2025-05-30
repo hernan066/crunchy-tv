@@ -13,23 +13,17 @@ import {
   useGetPopularQuery,
 } from "@/store/services/animeApi";
 import { SignedIn } from "@clerk/nextjs";
-import { useGetHistoryQuery } from "@/store/services/userApi";
-import { useGetRefreshToken } from "@/hooks/useGetRefreshToken";
 import { ApiResponseSuccess } from "@/types/api";
 import { AnimeItem } from "@/types/anime";
+import { HistoryList } from "@/components/historyList";
 
 export default function Home() {
-  const { token, isSignedIn } = useGetRefreshToken();
-
   const { data: featuredAnime = [], isLoading: l1 } = useGetSliderQuery();
   const { data: latestAnime = [], isLoading: l2 } = useGetLastUpdateQuery();
   const { data: lastEpisodes, isLoading: l3 } = useGetLastEpisodesQuery();
   const { data: popular = [], isLoading: l4 } = useGetPopularQuery();
-  const { data: history = null, isLoading: l5 } = useGetHistoryQuery(token!, {
-    skip: !token,
-  });
 
-  if (isSignedIn && (l1 || l2 || l3 || l4 || !history)) {
+  if (l1 || l2 || l3 || l4) {
     return <Loader />;
   }
 
@@ -41,13 +35,7 @@ export default function Home() {
           <Banner apiResponse={featuredAnime as ApiResponseSuccess<AnimeItem[]>} />
 
           <SignedIn>
-            {history.data.length > 0 && (
-              <EpisodesListSlider
-                apiResponse={history as ApiResponseSuccess<AnimeItem[]>}
-                titleSection={"Continuar viendo..."}
-                barProgress={true}
-              />
-            )}
+            <HistoryList titleSection={"Continuar viendo..."} barProgress={true} />
           </SignedIn>
           <EpisodesListSlider
             apiResponse={lastEpisodes as ApiResponseSuccess<AnimeItem[]>}
